@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 xdata = np.array([1,3,7,14])
 ydata = np.array([0.38,0.22,0.17,0.12])
 
-### Define Concept Type = Power Functions ###
+### Define Concept Type = Power Law Functions ###
 
 def curve(x, a, b, c):
     return a * np.exp(-b * x) + c
