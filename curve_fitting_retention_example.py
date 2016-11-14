@@ -20,7 +20,7 @@ def curve(x, a, b, c):
 
 popt, pcov = curve_fit(curve, xdata, ydata)
 
-### Get the New Curve ###
+### Plot that Curve! ###
 
 xcurve = np.linspace(1,30,30)
 ycurve = curve(xcurve, popt[0],popt[1],popt[2])
