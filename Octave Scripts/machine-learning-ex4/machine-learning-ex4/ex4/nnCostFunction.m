@@ -24,21 +24,42 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
+ymat = eye(num_labels)(y,:);          
          
 % You need to return the following variables correctly 
 J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+a1 = [ones(m, 1) X];
+z2 = a1* Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(m, 1) a2];
+z3 = a2* Theta2';
+a3 = sigmoid(z3);
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
-%               following parts.
-%
-% Part 1: Feedforward the neural network and return the cost in the
-%         variable J. After implementing Part 1, you can verify that your
-%         cost function computation is correct by verifying the cost
-%         computed in ex4.m
-%
+
+
+Theta1x = Theta1(:,2:size(Theta1)(2));
+Theta2x = Theta2(:,2:size(Theta2)(2));
+
+J = 0;
+for k = 1:m
+  for j = 1:(num_labels)
+  ycol = ymat(k,j);
+  J = J + -log(a3(k,j))*ycol - log(1-a3(k,j))*(1-ycol);
+  end 
+end
+J = J/m;
+
+a = sum(sum(Theta1x.^2));
+b = sum(sum(Theta2x.^2));
+
+J = J + ((lambda/(2*m))*(a+b));
+
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -50,6 +71,20 @@ Theta2_grad = zeros(size(Theta2));
 %               binary vector of 1's and 0's to be used with the neural network
 %               cost function.
 %
+
+Theta1_grad = zeros(size(Theta1));
+Theta2_grad = zeros(size(Theta2));
+
+d3 = a3 - ymat;
+d2 = (d3*Theta2x).*sigmoidGradient(z2);
+
+Delta1 = d2'*a1;
+Delta2 = d3'*a2;
+
+Theta1_grad = Delta1/m;
+Theta2_grad = Delta2/m;
+
+
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
@@ -62,7 +97,15 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+Thetar1 = Theta1;
+Thetar2 = Theta2;
+Thetar1(:,1)  = 0;
+Thetar2(:,1)  = 0;
+Thetar1 = Thetar1 *(lambda/m);
+Thetar2 = Thetar2 *(lambda/m);
 
+Theta1_grad = Theta1_grad + Thetar1;
+Theta2_grad = Theta2_grad + Thetar2;
 
 
 
